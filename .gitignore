@@ -1,0 +1,5 @@
+*data
+*run
+*.DS_Store
+*.pyc
+*.pyo
