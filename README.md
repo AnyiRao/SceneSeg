@@ -9,7 +9,7 @@ From a video to segemented scenes. Basically, two steps are needed including hol
 A single stage temporal scene segmentation is also provided in the [demo](docs/GETTING_STARTED.md#demo). This is going to be a easy-to-use tool for plot/story unstanding with scene as a semantic unit.
 Currently, it only supports image input.
 
-😬The scene segmentation dataset is prompted to **MovieNet** database with 318 movies together with **MMMovie** toolkit. It is encouraged to use in the future. 
+😬The scene segmentation dataset is prompted to **MMMovie** project with 318 movies together with a easy-to-use toolkit. It is encouraged to use in the future. 
 
 ## Features
 - Basic video processing tools are provided including shot detection and its parallel version.
