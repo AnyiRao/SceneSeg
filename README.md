@@ -21,7 +21,7 @@ Currently, it only supports image input.
 Some features are to be updated e.g. the feature extraction of human, action, speech and some common movie preprocessing tools.
 
 ## Installation
-Please refer to [INSTALL.md](docs/INSTALL.md) for installation and dataset preparation. Pretrained model are here
+Please refer to [INSTALL.md](docs/INSTALL.md) for installation and dataset preparation. Pretrained models and dataset are also explanined here.
 
 ## Get Started
 🥳Please see [GETTING_STARTED.md](docs/GETTING_STARTED.md) for the basic usage.

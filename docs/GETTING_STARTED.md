@@ -44,6 +44,17 @@ cd ../lgss
 python run.py config/demo.py ## Cut scene 
  ```
 
+### Preprocessing
+It is able to follow the following codes to process the data. Remember to read the ``argparase`` to choose an ideal setting.
+
+```sh
+cd pre
+python ShotDetect/shotdetect.py # Cut shot 
+python place/extrac_feat.py     # Extract place feature
+python audio/extrac_feat.py     # Extract audio feature
+ ```
+
+
 #### Notice
 ```pre/ShotDetect``` is developed based on [PySceneDetect](https://pyscenedetect.readthedocs.io/en/latest/). The shot detector is optimized to suit for movie.
 **Parallel shot detection** ``shotdetect_p.py`` is also included for future usage.
