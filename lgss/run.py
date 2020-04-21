@@ -1,7 +1,7 @@
 from __future__ import print_function
 from utilis import save_checkpoint, load_checkpoint, \
                     to_numpy, mkdir_ifmiss, write_json,\
-                    get_ap, get_mAP_seq, save_pred_seq, pred2scene,\
+                    get_ap, get_mAP_seq, save_pred_seq,\
                     cal_Recall, cal_Recall_time, cal_MIOU,\
                     pred2scene, scene2video
 from utilis.package import *

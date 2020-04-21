@@ -23,11 +23,12 @@ global parallel_cnt
 global parallel_num
 parallel_cnt = 0
 
-def main(args,video_path,data_root):
-    stats_file_folder_path = osp.join(data_root,"shot_stats")
+
+def main(args, video_path, data_root):
+    stats_file_folder_path = osp.join(data_root, "shot_stats")
     mkdir_ifmiss(stats_file_folder_path)
     video_prefix = video_path.split(".")[0].split("/")[-1]
-    stats_file_path = osp.join(stats_file_folder_path,'{}.csv'.format(video_prefix))
+    stats_file_path = osp.join(stats_file_folder_path, '{}.csv'.format(video_prefix))
     # print(video_path)
     video_manager = VideoManager([video_path])
     stats_manager = StatsManager()
@@ -51,11 +52,11 @@ def main(args,video_path,data_root):
         # Set begin and end time
         if args.begin_time is not None:
             start_time = base_timecode + args.begin_time
-            end_time = base_timecode + args.end_time    
+            end_time = base_timecode + args.end_time
             video_manager.set_duration(start_time=start_time, end_time=end_time)
         elif args.begin_frame is not None:
             start_frame = base_timecode + args.begin_frame
-            end_frame = base_timecode + args.end_frame    
+            end_frame = base_timecode + args.end_frame
             video_manager.set_duration(start_time=start_frame, end_time=end_frame)
             pass
         # Set downscale factor to improve processing speed.
@@ -75,19 +76,19 @@ def main(args,video_path,data_root):
         # Each shot is a tuple of (start, end) FrameTimecodes.
         # Save keyf img for each shot
         if args.save_keyf:
-            output_dir = osp.join(data_root,"shot_keyf",video_prefix)
-            generate_images(video_manager,shot_list,output_dir,num_images=3)
+            output_dir = osp.join(data_root, "shot_keyf", video_prefix)
+            generate_images(video_manager, shot_list, output_dir, num_images=3)
         
         # Save keyf txt of frame ind
         if args.save_keyf_txt:
-            output_dir = osp.join(data_root,"shot_movie","{}.txt".format(video_prefix))
-            mkdir_ifmiss(osp.join(data_root,"shot_movie"))
-            generate_images_txt(shot_list,output_dir,num_images=5)
+            output_dir = osp.join(data_root, "shot_txt", "{}.txt".format(video_prefix))
+            mkdir_ifmiss(osp.join(data_root, "shot_txt"))
+            generate_images_txt(shot_list, output_dir, num_images=5)
         
         # Split video into shot video
         if args.split_video:
-            output_dir = osp.join(data_root,"shot_split_video",video_prefix)
-            split_video_ffmpeg([video_path],shot_list,output_dir,suppress_output=True)
+            output_dir = osp.join(data_root, "shot_split_video", video_prefix)
+            split_video_ffmpeg([video_path], shot_list, output_dir, suppress_output=True)
 
         # We only write to the stats file if a save is required:
         if stats_manager.is_save_required():
@@ -98,12 +99,14 @@ def main(args,video_path,data_root):
 
     return shot_list
 
+
 def call_back(rst):
     global parallel_cnt
     global parallel_num
     parallel_cnt += 1
     if parallel_cnt % 1 == 0:
         print('{}, {:5d} / {:5d} done!'.format(datetime.now(), parallel_cnt, parallel_num))
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("Parallel ShotDetect")
@@ -112,16 +115,16 @@ if __name__ == '__main__':
                         default=osp.join("/mnt/SSD/scene/SceneSeg/data/demo/video"),
                         help="path to the videos to be processed, please use absolute path")
     parser.add_argument('--list_file', type=str, 
-                        default=osp.join("/mnt/SSD/scene/SceneSeg/data/demo","meta/list_test.txt"),
+                        default=osp.join("/mnt/SSD/scene/SceneSeg/data/demo", "meta/list_test.txt"),
                         help='The list of videos to be processed,\
                         in the form of xxxx0.mp4\nxxxx1.mp4\nxxxx2.mp4\n')
     parser.add_argument('--save_data_root_path', type=str, 
                         default="/mnt/SSD/scene/SceneSeg/data/demo",
                         help="path to the saved data, please use absolute path")
-    parser.add_argument('--save_keyf',     action="store_true")
-    parser.add_argument('--save_keyf_txt', action="store_true")
-    parser.add_argument('--split_video',   action="store_true")
-    parser.add_argument('--keep_resolution',action="store_true")    
+    parser.add_argument('--save_keyf',       action="store_true")
+    parser.add_argument('--save_keyf_txt',   action="store_true")
+    parser.add_argument('--split_video',     action="store_true")
+    parser.add_argument('--keep_resolution', action="store_true")
     parser.add_argument('--begin_time',  type=float, default=None,  help="float: timecode")
     parser.add_argument('--end_time',    type=float, default=120.0, help="float: timecode")
     parser.add_argument('--begin_frame', type=int,   default=None,  help="int: frame")
@@ -131,13 +134,13 @@ if __name__ == '__main__':
     if args.list_file is None:
         video_list = sorted(os.listdir(args.source_path))
     else:
-        video_list = [x.strip() for x in open(args.list_file)] 
-    
+        video_list = [x.strip() for x in open(args.list_file)]
+
     parallel_num = len(video_list)
-    pool = multiprocessing.Pool(processes=args.num_workers) 
+    pool = multiprocessing.Pool(processes=args.num_workers)
     for video_id in video_list:
-        video_path = osp.abspath(osp.join(args.source_path,video_id))
+        video_path = osp.abspath(osp.join(args.source_path, video_id))
         # main(args,video_path,args.save_data_root_path) ## uncommnet this line and turn to non-parallel mode if you want to debug
-        pool.apply_async(main, args=(args,video_path,args.save_data_root_path), callback=call_back)
-    pool.close() 
+        pool.apply_async(main, args=(args, video_path, args.save_data_root_path), callback=call_back)
+    pool.close()
     pool.join()

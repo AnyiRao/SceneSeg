@@ -336,7 +336,6 @@ class VideoManager(object):
         self._downscale_factor = 1
         self._frame_length = get_num_frames(self._cap_list)
 
-
     def set_downscale_factor(self, downscale_factor=None):
         # type: (Optional[int]) -> None
         """ Set Downscale Factor - sets the downscale/subsample factor of returned frames.
@@ -360,7 +359,6 @@ class VideoManager(object):
                 'Downscale factor set to %d, effective resolution: %d x %d',
                 self._downscale_factor, effective_framesize[0], effective_framesize[1])
 
-
     def get_num_videos(self):
         # type: () -> int
         """ Get Number of Videos - returns the length of the capture list (self._cap_list),
@@ -371,7 +369,6 @@ class VideoManager(object):
         """
         return len(self._cap_list)
 
-
     def get_video_paths(self):
         # type: () -> List[str]
         """ Get Video Paths - returns list of strings containing paths to the open video(s).
@@ -380,7 +377,6 @@ class VideoManager(object):
             List[str]: List of paths to the video files opened by the VideoManager.
         """
         return list(self._video_file_paths)
-
 
     def get_framerate(self):
         # type: () -> float
@@ -392,7 +388,6 @@ class VideoManager(object):
             float: Framerate, in frames/sec.
         """
         return self._cap_framerate
-
 
     def get_base_timecode(self):
         # type: () -> FrameTimecode
@@ -418,7 +413,6 @@ class VideoManager(object):
         """
         return FrameTimecode(timecode=0, fps=self._cap_framerate)
 
-
     def get_current_timecode(self):
         # type: () -> FrameTimecode
         """ Get Current Timecode - returns a FrameTimecode object at current VideoManager position.
@@ -427,7 +421,6 @@ class VideoManager(object):
             FrameTimecode: Timecode at the current VideoManager position.
         """
         return self._curr_time
-
 
     def get_framesize(self):
         # type: () -> Tuple[int, int]
@@ -451,7 +444,6 @@ class VideoManager(object):
             and height represent the size of the video frame in pixels.
         """
         return [num_pixels / self._downscale_factor for num_pixels in self._cap_framesize]
-
 
     def set_duration(self, duration=None, start_time=None, end_time=None):
         # type: (Optional[FrameTimecode], Optional[FrameTimecode], Optional[FrameTimecode]) -> None
@@ -508,7 +500,6 @@ class VideoManager(object):
                 duration.get_timecode() if duration is not None else duration,
                 end_time.get_timecode() if end_time is not None else end_time)
 
-
     def start(self):
         # type: () -> None
         """ Start - starts video decoding and seeks to start time.  Raises
@@ -525,7 +516,6 @@ class VideoManager(object):
         self._started = True
         self._get_next_cap()
         self.seek(self._start_time)
-
 
     def seek(self, timecode):
         # type: (FrameTimecode) -> bool
@@ -557,14 +547,12 @@ class VideoManager(object):
                     return False
         return True
 
-
     def release(self):
         # type: () -> None
         """ Release (cv2.VideoCapture method), releases all open capture(s). """
         release_captures(self._cap_list)
         self._cap_list = []
         self._started = False
-
 
     def reset(self):
         # type: () -> None
@@ -584,7 +572,6 @@ class VideoManager(object):
         self._cap_list, self._cap_framerate, self._cap_framesize = open_captures(
             video_files=self._video_file_paths, framerate=self._curr_time.get_framerate())
         self._curr_cap, self._curr_cap_idx = None, None
-
 
     def get(self, capture_prop, index=None):
         # type: (int, Optional[int]) -> Union[float, int]
@@ -613,7 +600,6 @@ class VideoManager(object):
             index = 0
         return self._cap_list[index].get(capture_prop)
 
-
     def grab(self):
         # type: () -> bool
         """ Grab (cv2.VideoCapture method) - retrieves a frame but does not return it.
@@ -639,7 +625,6 @@ class VideoManager(object):
             grabbed = False
             self._last_frame = None
         return grabbed
-
 
     def retrieve(self):
         # type: () -> Tuple[bool, Union[None, numpy.ndarray]]
@@ -673,7 +658,6 @@ class VideoManager(object):
             self._last_frame = None
         return (retrieved, self._last_frame)
 
-
     def read(self):
         # type: () -> Tuple[bool, Union[None, numpy.ndarray]]
         """ Read (cv2.VideoCapture method) - retrieves and returns a frame.
@@ -704,7 +688,6 @@ class VideoManager(object):
         if read_frame:
             self._curr_time += 1
         return (read_frame, self._last_frame)
-
 
     def _get_next_cap(self):
         # type: () -> bool

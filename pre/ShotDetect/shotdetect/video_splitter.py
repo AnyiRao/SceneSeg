@@ -33,9 +33,9 @@ from shotdetect.platform import tqdm
 from utilis import mkdir_ifmiss
 
 
-##
-## Command Availability Checking Functions
-##
+#
+# Command Availability Checking Functions
+#
 
 def is_mkvmerge_available():
     # type: () -> bool
@@ -71,9 +71,9 @@ def is_ffmpeg_available():
     return True
 
 
-##
-## Split Video Functions
-##
+#
+# Split Video Functions
+#
 
 def split_video_mkvmerge(input_video_paths, shot_list, output_file_prefix,
                          video_name, suppress_output=False):
@@ -125,15 +125,15 @@ def split_video_mkvmerge(input_video_paths, shot_list, output_file_prefix,
         logging.error('Error splitting video (mkvmerge returned %d).', ret_val)
 
 
-def split_video_ffmpeg(input_video_paths, shot_list,output_dir,
-                        output_file_template="${OUTPUT_DIR}/shot_${SHOT_NUMBER}.mp4",
-                        arg_override='-crf 21',
-                        hide_progress=False, suppress_output=False):
+def split_video_ffmpeg(input_video_paths, shot_list, output_dir,
+                       output_file_template="${OUTPUT_DIR}/shot_${SHOT_NUMBER}.mp4",
+                       arg_override='-crf 21',
+                       hide_progress=False, suppress_output=False):
     # type: (List[str], List[Tuple[FrameTimecode, FrameTimecode]], Optional[str],
     #        Optional[str], Optional[bool]) -> None
     """ Calls the ffmpeg command on the input video(s), generating a new video for
     each shot based on the start/end timecodes. """
-    
+
     mkdir_ifmiss(output_dir)
     if not input_video_paths or not shot_list:
         return
@@ -167,9 +167,11 @@ def split_video_ffmpeg(input_video_paths, shot_list,output_dir,
             progress_bar = tqdm(total=total_frames, unit='frame', miniters=1, desc="Split Video")
         processing_start_time = time.time()
         for i, (start_time, end_time) in enumerate(shot_list):
+            end_time = end_time.__sub__(1)  # Fix the last frame of a shot to be 1 less than the first frame of the next shot
             duration = (end_time - start_time)
-            # Fix FFmpeg start timecode frame shift.
-            start_time -= 1
+            # an alternative way to do it
+            # duration = (end_time.get_frames()-1)/end_time.framerate - (start_time.get_frames())/start_time.framerate
+            # duration_frame = end_time.get_frames()-1 - start_time.get_frames()
             call_list = ['ffmpeg']
             if suppress_output:
                 call_list += ['-v', 'quiet']
@@ -184,8 +186,8 @@ def split_video_ffmpeg(input_video_paths, shot_list,output_dir,
                 start_time.get_timecode(),
                 '-i',
                 input_video_paths[0]]
-            call_list += arg_override # compress
-            call_list += ['-map_chapters', '-1'] #remove meta stream
+            call_list += arg_override  # compress
+            call_list += ['-map_chapters', '-1']  # remove meta stream
             call_list += [
                 '-strict',
                 '-2',
@@ -203,7 +205,7 @@ def split_video_ffmpeg(input_video_paths, shot_list,output_dir,
             if ret_val != 0:
                 break
             if progress_bar:
-                progress_bar.update(duration.get_frames())
+                progress_bar.update(duration.get_frames()+1)  # to compensate the missing one frame caused above
         if progress_bar:
             print('')
             logging.info('Average processing speed %.2f frames/sec.',
