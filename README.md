@@ -27,12 +27,11 @@ Please refer to [INSTALL.md](docs/INSTALL.md) for installation and dataset prepa
 🥳Please see [GETTING_STARTED.md](docs/GETTING_STARTED.md) for the basic usage.
 
 ## Citation
-To be updated as CVPR version
 ```
-@article{rao2020local,
-  title={A Local-to-Global Approach to Multi-modal Movie Scene Segmentation},
-  author={Rao, Anyi and Xu, Linning and Xiong, Yu and Xu, Guodong and Huang, Qingqiu and Zhou, Bolei and Lin, Dahua},
-  journal={arXiv preprint arXiv:2004.02678},
-  year={2020}
+@inproceedings{rao2020local,
+title={A Local-to-Global Approach to Multi-modal Movie Scene Segmentation},
+author={Rao, Anyi and Xu, Linning and Xiong, Yu and Xu, Guodong and Huang, Qingqiu and Zhou, Bolei and Lin, Dahua},
+booktitle={IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+year={2020}
 }
 ```

@@ -1,4 +1,8 @@
 ## Installation and Preparation
+
+![Python](https://img.shields.io/badge/Python->=3.6-Blue?logo=python)  ![Pytorch](https://img.shields.io/badge/PyTorch->=1.0.0-Orange?logo=pytorch) ![mmcv](https://img.shields.io/badge/mmcv-%3E%3D0.4.0-green)
+
+
 ### Requirements
 SceneSeg is currently very easy to install before the introduction of **feature extractor**
 
