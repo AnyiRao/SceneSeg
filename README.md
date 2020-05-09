@@ -17,7 +17,7 @@ Currently, it only supports image input.
 - All-in-one scene segmentation tool with all multi-modal multi-semantic elements.
 
 ## Notice 
-😅Since some enthusiastic researchers are requesting the codes but we are still working on organizing the codebase in an easy-to-use fashion, e.g. **MMMovie**, we release a on-going version here.
+😅Since some enthusiastic researchers are requesting the codes but we are still working on organizing the codebase in an easy-to-use fashion, e.g. **MMMovie**, we release an on-going version here.
 Some features are to be updated e.g. the feature extraction of human, action, speech and some common movie preprocessing tools.
 
 ## Installation
