@@ -1,8 +1,9 @@
-experiment_name = "image18_demo"
+experiment_name = "image50"
 experiment_description = "scene segmentation using images only"
 # overall confg
 data_root = '../data/demo'
-shot_frm_path = data_root + "/shot_txt"  # the correspondence file of shots and their frames
+shot_frm_path = data_root + "/shot_txt"  
+# the correspondence file of shots and their frames
 '''
 video name is specially required in this setting,
 please make sure there is no space in the name
@@ -20,7 +21,7 @@ dataset = dict(
 # model settings
 model = dict(
     name='LGSS_image',
-    backbone='resnet18',
+    backbone='resnet50',
     fix_resnet=False,
     sim_channel=512,  # dim of similarity vector
     bidirectional=True,
@@ -37,7 +38,7 @@ loss = dict(weight=[0.5, 5])
 # runtime settings
 resume = None
 trainFlag = False
-testFlag  = True
+testFlag = True
 batch_size = 16
 epochs = 30
 logger = dict(log_interval=200, logs_dir="../run/{}".format(experiment_name))

@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.model_zoo as model_zoo
-import numpy as np
 import pdb
 
 __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
@@ -25,7 +24,8 @@ def conv3x3(in_planes, out_planes, stride=1):
 
 def conv1x1(in_planes, out_planes, stride=1):
     """1x1 convolution"""
-    return nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
+    return nn.Conv2d(
+        in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
 
 
 class BasicBlock(nn.Module):
@@ -33,7 +33,8 @@ class BasicBlock(nn.Module):
 
     def __init__(self, inplanes, planes, stride=1, downsample=None):
         super(BasicBlock, self).__init__()
-        # Both self.conv1 and self.downsample layers downsample the input when stride != 1
+        # Both self.conv1 and self.downsample layers downsample the input
+        # when stride != 1
         self.conv1 = conv3x3(inplanes, planes, stride)
         self.bn1 = nn.BatchNorm2d(planes)
         self.relu = nn.ReLU(inplace=True)
@@ -66,7 +67,8 @@ class Bottleneck(nn.Module):
 
     def __init__(self, inplanes, planes, stride=1, downsample=None):
         super(Bottleneck, self).__init__()
-        # Both self.conv2 and self.downsample layers downsample the input when stride != 1
+        # Both self.conv2 and self.downsample layers downsample the input
+        # when stride != 1
         self.conv1 = conv1x1(inplanes, planes)
         self.bn1 = nn.BatchNorm2d(planes)
         self.conv2 = conv3x3(planes, planes, stride)
@@ -115,7 +117,7 @@ class ResNet(nn.Module):
         self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        #self.fc = nn.Linear(512 * block.expansion, num_classes)
+        # self.fc = nn.Linear(512 * block.expansion, num_classes)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -125,8 +127,10 @@ class ResNet(nn.Module):
                 nn.init.constant_(m.bias, 0)
 
         # Zero-initialize the last BN in each residual branch,
-        # so that the residual branch starts with zeros, and each residual block behaves like an identity.
-        # This improves the model by 0.2~0.3% according to https://arxiv.org/abs/1706.02677
+        # so that the residual branch starts with zeros, and
+        # each residual block behaves like an identity.
+        # This improves the model by 0.2~0.3%
+        # according to https://arxiv.org/abs/1706.02677
         if zero_init_residual:
             for m in self.modules():
                 if isinstance(m, Bottleneck):
@@ -163,8 +167,9 @@ class ResNet(nn.Module):
 
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
-        #x = self.fc(x)
+        # x = self.fc(x)
         return x
+
 
 def resnet18(pretrained=False, **kwargs):
     """Constructs a ResNet-18 model.
@@ -173,7 +178,8 @@ def resnet18(pretrained=False, **kwargs):
     """
     model = ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['resnet18']), strict=False)
+        model.load_state_dict(
+            model_zoo.load_url(model_urls['resnet18']), strict=False)
     return model
 
 
@@ -184,7 +190,8 @@ def resnet34(pretrained=False, **kwargs):
     """
     model = ResNet(BasicBlock, [3, 4, 6, 3], **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['resnet34']), strict=False)
+        model.load_state_dict(
+            model_zoo.load_url(model_urls['resnet34']), strict=False)
     return model
 
 
@@ -195,7 +202,8 @@ def resnet50(pretrained=False, **kwargs):
     """
     model = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['resnet50']), strict=False)
+        model.load_state_dict(
+            model_zoo.load_url(model_urls['resnet50']), strict=False)
     return model
 
 
@@ -206,7 +214,8 @@ def resnet101(pretrained=False, **kwargs):
     """
     model = ResNet(Bottleneck, [3, 4, 23, 3], **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['resnet101']), strict=False)
+        model.load_state_dict(
+            model_zoo.load_url(model_urls['resnet101']), strict=False)
     return model
 
 
@@ -217,13 +226,16 @@ def resnet152(pretrained=False, **kwargs):
     """
     model = ResNet(Bottleneck, [3, 8, 36, 3], **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['resnet152']), strict=False)
+        model.load_state_dict(
+            model_zoo.load_url(model_urls['resnet152']), strict=False)
     return model
+
 
 class feat_extractor(nn.Module):
     def __init__(self, cfg, fix_resnet=False):
         super(feat_extractor, self).__init__()
-        assert cfg.model.backbone in ['resnet18','resnet34','resnet50','resnet101']
+        assert cfg.model.backbone in ['resnet18', 'resnet34',
+                                      'resnet50', 'resnet101']
         if cfg.model.backbone == 'resnet18':
             self.backbone = resnet18(pretrained=True)
         elif cfg.model.backbone == 'resnet34':
@@ -239,14 +251,15 @@ class feat_extractor(nn.Module):
         backbone_state = self.backbone.state_dict()
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                nn.init.kaiming_normal_(
+                    m.weight, mode='fan_out', nonlinearity='relu')
             elif isinstance(m, nn.Linear):
                 nn.init.normal_(m.weight, 0.001)
                 nn.init.constant_(m.bias, 0)
         self.backbone.load_state_dict(backbone_state)
 
     def forward(self, x):
-        batch_size,seq_len,shot_num,c,h,w = x.shape
+        batch_size, seq_len, shot_num, c, h, w = x.shape
         x = x.view(batch_size*seq_len*shot_num, c, h, w)
 
         if self.fix_resnet:
@@ -256,43 +269,51 @@ class feat_extractor(nn.Module):
                 x = x.detach()
         else:
             x = self.backbone(x)
-        x = x.view(batch_size,seq_len,shot_num,-1)
+        x = x.view(batch_size, seq_len, shot_num, -1)
         return x
+
 
 class Cos(nn.Module):
     def __init__(self, cfg):
         super(Cos, self).__init__()
-        self.shot_num= cfg.shot_num 
+        self.shot_num = cfg.shot_num
         self.channel = cfg.model.sim_channel
-        self.conv1 = nn.Conv2d(1, self.channel, kernel_size=(self.shot_num//2,1))
+        self.conv1 = nn.Conv2d(1, self.channel, kernel_size=(self.shot_num//2, 1))
 
-    def forward(self, x): #[batch_size, seq_len, shot_num, feat_dim] 
-        x = x.view(-1,1,x.shape[2],x.shape[3])
-        part1, part2 = torch.split(x, [self.shot_num//2]*2, dim=2) ## batch_size*seq_len, 1, [self.shot_num//2], feat_dim
+    def forward(self, x):  # [batch_size, seq_len, shot_num, feat_dim]
+        x = x.view(-1, 1, x.shape[2], x.shape[3])
+        part1, part2 = torch.split(x, [self.shot_num//2]*2, dim=2)
+        # batch_size*seq_len, 1, [self.shot_num//2], feat_dim
         part1 = self.conv1(part1).squeeze()
-        part2 = self.conv1(part2).squeeze() 
-        x = F.cosine_similarity(part1, part2, dim=2) ## batch_size,channel
+        part2 = self.conv1(part2).squeeze()
+        x = F.cosine_similarity(part1, part2, dim=2)  # batch_size,channel
         return x
+
 
 class BNet(nn.Module):
     def __init__(self, cfg):
         super(BNet, self).__init__()
-        self.shot_num= cfg.shot_num 
+        self.shot_num = cfg.shot_num
         self.channel = cfg.model.sim_channel
-        self.conv1 = nn.Conv2d(1, self.channel, kernel_size=(cfg.shot_num ,1))
-        self.max3d = nn.MaxPool3d(kernel_size=(self.channel,1,1))
-        self.cos   = Cos(cfg)
+        self.conv1 = nn.Conv2d(1, self.channel, kernel_size=(cfg.shot_num, 1))
+        self.max3d = nn.MaxPool3d(kernel_size=(self.channel, 1, 1))
+        self.cos = Cos(cfg)
         self.feat_extractor = feat_extractor(cfg)
 
-    def forward(self, x): # [batch_size, seq_len, shot_num, 3, 224, 224] 
-        feat = self.feat_extractor(x) # [batch_size, seq_len, shot_num, feat_dim] 
-        context = feat.view(feat.shape[0]*feat.shape[1],1,feat.shape[-2],feat.shape[-1])
-        context = self.conv1(context) ## batch_size*seq_len,sim_channel,1,feat_dim
-        context = self.max3d(context) ## batch_size*seq_len,1,1,feat_dim
+    def forward(self, x):  # [batch_size, seq_len, shot_num, 3, 224, 224]
+        feat = self.feat_extractor(x)
+        # [batch_size, seq_len, shot_num, feat_dim] 
+        context = feat.view(
+            feat.shape[0]*feat.shape[1], 1, feat.shape[-2], feat.shape[-1])
+        context = self.conv1(context)
+        # batch_size*seq_len,sim_channel,1,feat_dim
+        context = self.max3d(context)
+        # batch_size*seq_len,1,1,feat_dim
         context = context.squeeze()
         sim = self.cos(feat)
-        bound = torch.cat((context,sim),dim=1)
+        bound = torch.cat((context, sim), dim=1)
         return bound
+
 
 class LGSSone(nn.Module):
     def __init__(self, cfg, mode="image"):
@@ -302,33 +323,41 @@ class LGSSone(nn.Module):
         self.lstm_hidden_size = cfg.model.lstm_hidden_size
         if mode == "image":
             self.bnet = BNet(cfg)
-            self.input_dim = (self.bnet.feat_extractor.backbone.inplanes+cfg.model.sim_channel)            
-        self.lstm = nn.LSTM(input_size= self.input_dim, hidden_size= self.lstm_hidden_size, \
-                            num_layers= self.num_layers, batch_first=True, bidirectional=cfg.model.bidirectional)
-        
+            self.input_dim = (
+                self.bnet.feat_extractor.backbone.inplanes +
+                cfg.model.sim_channel)
+        self.lstm = nn.LSTM(input_size=self.input_dim,
+                            hidden_size=self.lstm_hidden_size,
+                            num_layers=self.num_layers,
+                            batch_first=True,
+                            bidirectional=cfg.model.bidirectional)
+
         if cfg.model.bidirectional:
             self.fc1 = nn.Linear(self.lstm_hidden_size*2, 100)
-        else:  
+        else:
             self.fc1 = nn.Linear(self.lstm_hidden_size, 100)
         self.fc2 = nn.Linear(100, 2)
 
     def forward(self, x):
         x = self.bnet(x)
-        x = x.view(-1, self.seq_len, x.shape[-1]) # torch.Size([128, seq_len, 3*channel]) 
+        x = x.view(-1, self.seq_len, x.shape[-1])
+        # torch.Size([128, seq_len, 3*channel])
         self.lstm.flatten_parameters()
-        out, (_, _) = self.lstm(x, None)  # out: tensor of shape (batch_size, seq_length, hidden_size)
+        out, (_, _) = self.lstm(x, None)
+        # out: tensor of shape (batch_size, seq_length, hidden_size)
         out = F.relu(self.fc1(out))
         out = self.fc2(out)
-        out = out.view(-1,2)
+        out = out.view(-1, 2)
         return out
+
 
 class LGSS_image(nn.Module):
     def __init__(self, cfg):
         super(LGSS_image, self).__init__()
         self.mode = cfg.dataset.mode
         if 'image' in self.mode:
-            self.bnet_image = LGSSone(cfg,"image")
-            
+            self.bnet_image = LGSSone(cfg, "image")
+
     def forward(self, img, cast_feat, act_feat, aud_feat):
         out = 0
         assert 'image' in self.mode
@@ -336,12 +365,3 @@ class LGSS_image(nn.Module):
             image_bound = self.bnet_image(img)
             out = image_bound
         return out
-
-if __name__ == '__main__':
-    from mmcv import Config
-    cfg = Config.fromfile("./config/image.py")
-    model = LGSS(cfg)
-    img= torch.randn(cfg.batch_size, cfg.seq_len, cfg.shot_num, 3, 224, 224)
-    output = model(img)
-    print(cfg.batch_size)
-    print(output.data.size())
