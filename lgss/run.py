@@ -29,7 +29,7 @@ cfg = Config.fromfile(args.config)
 os.environ["CUDA_VISIBLE_DEVICES"] = cfg.gpus
 if cfg.trainFlag:  # copy running config to run files
     writer = SummaryWriter(logdir=cfg.logger.logs_dir)
-    shutil.copy2(args.config,cfg.logger.logs_dir)
+    shutil.copy2(args.config, cfg.logger.logs_dir)
 
 
 train_iter = 0
@@ -50,14 +50,14 @@ def train(cfg, model, train_loader, optimizer, scheduler, epoch, criterion):
         loss = criterion(output, target)
         loss.backward()
         optimizer.step()
-        scheduler.step()
         if loss.item() > 0:
             train_iter += 1
             writer.add_scalar('train/loss', loss.item(), train_iter)
         if batch_idx % cfg.logger.log_interval == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                epoch, int(batch_idx * len(data_place)) , len(train_loader.dataset),
+                epoch, int(batch_idx * len(data_place)), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.item()))
+    scheduler.step()
 
 
 final_dict = {}
@@ -70,8 +70,8 @@ def test(cfg, model, test_loader, criterion, mode='test'):
     test_loss = 0
     correct1, correct0 = 0, 0
     gt1, gt0, all_gt = 0, 0, 0
-    prob_raw =[]; gts_raw = []
-    preds = []; gts = []
+    prob_raw, gts_raw = [], []
+    preds, gts = [], []
     batch_num = 0
     with torch.no_grad():
         for data_place, data_cast, data_act, data_aud, target in test_loader:
