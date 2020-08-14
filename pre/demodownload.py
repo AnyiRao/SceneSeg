@@ -1,15 +1,18 @@
-from pytube import YouTube
-import shutil
-import os.path as osp
 import os
+import os.path as osp
+import shutil
+
+from pytube import YouTube
+
+
 def main():
     os.makedirs("../data/demo", exist_ok = True)
     os.makedirs("../data/demo/video", exist_ok = True)
     video_save_path = "../data/demo/video"
-    yt = YouTube('https://www.youtube.com/watch?v=BaqBhLkDuto')
+    yt = YouTube('https://www.youtube.com/watch?v=rT22nYLaVbo')
     yt.streams.get_highest_resolution().download(video_save_path)
-    shutil.move(osp.join(video_save_path,"{}.mp4".format(yt.title)),osp.join(video_save_path,"demo.mp4"))
-    # yt = YouTube('http://youtube.com/watch?v=9bZkp7q19f0')
-    # yt.streams.filter(progressive=True, file_extension='mp4').order_by('resolution')[-1].download()
+    shutil.move(osp.join(video_save_path,os.listdir(video_save_path)[0]),osp.join(video_save_path,"demo.mp4"))
+
+
 if __name__ == '__main__':
     main()

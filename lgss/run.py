@@ -1,20 +1,19 @@
 from __future__ import print_function
-from utilis import save_checkpoint, load_checkpoint, \
-                    to_numpy, mkdir_ifmiss, write_json,\
-                    get_ap, get_mAP_seq, save_pred_seq,\
-                    cal_Recall, cal_Recall_time, cal_MIOU,\
-                    pred2scene, scene2video
-from utilis.package import *
-from mmcv import Config
 
+from mmcv import Config
+from tensorboardX import SummaryWriter
+
+import src.models as models
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from torch.utils.data import DataLoader
-import src.models as models
 from src import get_data
-from tensorboardX import SummaryWriter
+from torch.utils.data import DataLoader
+from utilis import (cal_MIOU, cal_Recall, cal_Recall_time, get_ap, get_mAP_seq,
+                    load_checkpoint, mkdir_ifmiss, pred2scene, save_checkpoint,
+                    save_pred_seq, scene2video, to_numpy, write_json)
+from utilis.package import *
 
 
 def parse_args():
@@ -203,7 +202,7 @@ def main():
         if cfg.dataset.name == "demo":
             print('...visualize scene video in demo mode, '
                   'the above quantitive metrics are invalid')
-            scene_dict, scene_list = pred2scene(cfg, threshold=0.7)
+            scene_dict, scene_list = pred2scene(cfg, threshold=0.8)
             scene2video(cfg, scene_list)
 
 

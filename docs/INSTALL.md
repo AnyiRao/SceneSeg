@@ -45,13 +45,20 @@ Pretrained models are at [Google Drive](https://drive.google.com/open?id=1F-uqCK
 Please follow the provided folder structure and put it under ``run``.
 
 ### Prepare Datasets for Scene318
-Dataset are at [Google Drive](https://drive.google.com/open?id=1F-uqCKnhtSdQKcDUiL3dRcLOrAxHargz). Some of them are currently supported.
+Annotation and metadata are at [Google Drive](https://drive.google.com/open?id=1F-uqCKnhtSdQKcDUiL3dRcLOrAxHargz). The full movienet annotation including, debut year, cast, director info and so on can be download using this
+``wget https://openmmlab.oss-cn-hangzhou.aliyuncs.com/datasets/movienet/meta.v1.zip
+``
+
+The intermediate features ``place_feat, cast_feat, act_feat, aud_feat`` are located at movienet.site server due to the limited free size of Google Drive. 
+They can be download using e.g., ``wget http://movienet.site/data/cvpr20sceneseg/act_feat.zip`` and unzip e.g., ``unzip act_feat.zip``. 
+
 Put ``label318`` ``shot_movie318`` ``meta/split318.json``, 
-intermediate features ``place_feat cast_feat act_feat aud_feat`` under ``data``
+intermediate features ``place_feat, cast_feat, act_feat, aud_feat`` under ``data``. 
 
-```label318``` is the scene transit (1) or not (0) label for each shot. ```shot_movie318``` is the shot and frame correspondence to recover the time of each scene.
-
+#### Explanation
+```label318``` is the scene transit (**1**) or not (**0**) label for each shot. ```shot_movie318``` is the shot and frame correspondence to recover the time of each scene. They will be automatically 
+handled by the processing codes e.g., the ``data_pre`` function in ``src/data/all.py``
 ### Prepare Your Own Dataset
-If you run our demo, you don't need to prepare. Just run our [three lines](./GETTING_STARTED.md#demo)
+If you run our demo, you don't need to prepare. Just run our [three lines](./GETTING_STARTED.md#demo).
 
-If you wish to use the full functions of the method, you may need to organize your data as ours.
+If you wish to use the method's full functions, you may need to organize your data like ours.

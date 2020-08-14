@@ -42,4 +42,4 @@ testFlag = True
 batch_size = 16
 epochs = 30
 logger = dict(log_interval=200, logs_dir="../run/{}".format(experiment_name))
-data_loader_kwargs = dict(num_workers=32, pin_memory=True, drop_last=True)
+data_loader_kwargs = dict(num_workers=32, pin_memory=True, drop_last=False)

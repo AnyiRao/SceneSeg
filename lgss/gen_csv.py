@@ -1,6 +1,6 @@
+import pandas as pd
 from utilis import read_json
 from utilis.package import *
-import pandas as pd
 
 
 def main():
