@@ -188,7 +188,7 @@ def main(args):
         print('****** {}, {} / {}, {} ******'.format(datetime.now(), idx_m+1, len(video_list), video_id))
         save_path = osp.join(args.save_path, video_id)
         os.makedirs(save_path,exist_ok=True)
-        img_path = get_img_folder(args.img_path, video_id)
+        img_path = get_img_folder(args.source_img_path, video_id)
         if not osp.isdir(img_path):
             print('Cannot find images!')
 
