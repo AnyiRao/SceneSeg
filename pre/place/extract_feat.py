@@ -238,7 +238,7 @@ if __name__ == '__main__':
     parser.add_argument('--list_file', type=str, default=osp.join(data_root,'meta/list_test.txt'),
                         help='The list of videos to be processed,\
                         in the form of xxxx0.mp4\nxxxx1.mp4\nxxxx2.mp4\n \
-                                     or xxxx0\nxxxx1\nxxxx2\n' ))
+                                     or xxxx0\nxxxx1\nxxxx2\n')
     parser.add_argument('--source_img_path', type=str,default=osp.join(data_root,'shot_keyf'))
     parser.add_argument('--save_path',type=str,default=osp.join(data_root,'place_feat_raw'))
     parser.add_argument('--save_feat_path',type=str,default=osp.join(data_root,'place_feat'))
