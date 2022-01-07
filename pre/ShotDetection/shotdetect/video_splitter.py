@@ -1,44 +1,26 @@
-""" `shotdetect.video_splitter` Module
+# The codes below partially refer to the PySceneDetect. According
+# to its BSD 3-Clause License, we keep the following.
+#
+#          PySceneDetect: Python-Based Video Scene Detector
+#     -----------------------------------------------------------
+#     [  Site: http://www.bcastell.com/projects/PySceneDetect/   ]
+#     [  Github: https://github.com/Breakthrough/PySceneDetect/  ]
+#     [  Documentation: http://pyscenedetect.readthedocs.org/    ]
+#
+# Copyright (C) 2014-2021 Brandon Castellano <http://www.bcastell.com>.
 
-The `shotdetect.video_splitter` module contains functions to split videos
-with a shot list using external tools (e.g. `mkvmerge`, `ffmpeg`), as well
-as functions to check if the tools are available.
-
-Certain distributions of ShotDetect may include the above software. If
-using a source distribution, these programs can be obtained from following
-URLs (note that mkvmerge is a part of the MKVToolNix package):
-
- * FFmpeg:   [ https://ffmpeg.org/download.html ]
- * mkvmerge: [ https://mkvtoolnix.download/downloads.html ]
-
-If you are a Linux user, you can likely obtain the above programs from your
-package manager (e.g. `sudo apt-get install ffmpeg`).
-
-Once installed, ensure the program can be accessed system-wide by calling
-the `mkvmerge` or `ffmpeg` command from a terminal/command prompt.
-ShotDetect will automatically use whichever program is available on
-the computer, depending on the specified command-line options.
-"""
-
-# Standard Library Imports
 import logging
-import subprocess
 import math
+import os
+import pdb
+import subprocess
 import time
 from string import Template
-import pdb
 
-# Third-Party Library Imports
 from shotdetect.platform import tqdm
-from utilis import mkdir_ifmiss
 
-
-#
-# Command Availability Checking Functions
-#
 
 def is_mkvmerge_available():
-    # type: () -> bool
     """ Is mkvmerge Available: Gracefully checks if mkvmerge command is available.
 
     Returns:
@@ -55,7 +37,6 @@ def is_mkvmerge_available():
 
 
 def is_ffmpeg_available():
-    # type: () -> bool
     """ Is ffmpeg Available: Gracefully checks if ffmpeg command is available.
 
     Returns:
@@ -71,14 +52,8 @@ def is_ffmpeg_available():
     return True
 
 
-#
-# Split Video Functions
-#
-
 def split_video_mkvmerge(input_video_paths, shot_list, output_file_prefix,
                          video_name, suppress_output=False):
-    # type: (List[str], List[FrameTimecode, FrameTimecode], Optional[str],
-    #        Optional[bool]) -> None
     """ Calls the mkvmerge command on the input video(s), splitting it at the
     passed timecodes, where each shot is written in sequence from 001. """
 
@@ -127,14 +102,13 @@ def split_video_mkvmerge(input_video_paths, shot_list, output_file_prefix,
 
 def split_video_ffmpeg(input_video_paths, shot_list, output_dir,
                        output_file_template="${OUTPUT_DIR}/shot_${SHOT_NUMBER}.mp4",
-                       arg_override='-crf 21',
-                       hide_progress=False, suppress_output=False):
-    # type: (List[str], List[Tuple[FrameTimecode, FrameTimecode]], Optional[str],
-    #        Optional[str], Optional[bool]) -> None
+                       compress_output=False,
+                       hide_progress=False,
+                       suppress_output=False):
     """ Calls the ffmpeg command on the input video(s), generating a new video for
     each shot based on the start/end timecodes. """
 
-    mkdir_ifmiss(output_dir)
+    os.makedirs(output_dir, exist_ok=True)
     if not input_video_paths or not shot_list:
         return
 
@@ -153,10 +127,7 @@ def split_video_ffmpeg(input_video_paths, shot_list, output_dir,
             ' generates less accurate output, but supports multiple input videos.')
         raise NotImplementedError()
 
-    arg_override = arg_override.replace('\\"', '"')
-
     ret_val = None
-    arg_override = arg_override.split(' ')
     filename_template = Template(output_file_template)
     shot_num_format = '%0'
     shot_num_format += str(max(4, math.floor(math.log(len(shot_list), 10)) + 1)) + 'd'
@@ -186,7 +157,8 @@ def split_video_ffmpeg(input_video_paths, shot_list, output_dir,
                 start_time.get_timecode(),
                 '-i',
                 input_video_paths[0]]
-            call_list += arg_override  # compress
+            if compress_output:
+                call_list += '[-crf 21]'  # compress
             call_list += ['-map_chapters', '-1']  # remove meta stream
             call_list += [
                 '-strict',

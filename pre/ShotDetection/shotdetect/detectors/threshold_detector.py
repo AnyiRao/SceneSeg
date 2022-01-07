@@ -1,10 +1,18 @@
+# The codes below partially refer to the PySceneDetect. According
+# to its BSD 3-Clause License, we keep the following.
+#
+#          PySceneDetect: Python-Based Video Scene Detector
+#   ---------------------------------------------------------------
+#     [  Site: http://www.bcastell.com/projects/PySceneDetect/   ]
+#     [  Github: https://github.com/Breakthrough/PySceneDetect/  ]
+#     [  Documentation: http://pyscenedetect.readthedocs.org/    ]
+#
+# Copyright (C) 2014-2021 Brandon Castellano <http://www.bcastell.com>.
+
 import numpy
+
 from shotdetect.shot_detector import shotDetector
 
-
-##
-## ThresholdDetector Helper Functions
-##
 
 def compute_frame_average(frame):
     """Computes the average pixel value/intensity for all pixels in a frame.
@@ -20,10 +28,6 @@ def compute_frame_average(frame):
     avg_pixel_value = numpy.sum(frame[:, :, :]) / num_pixel_values
     return avg_pixel_value
 
-
-##
-## ThresholdDetector Class Implementation
-##
 
 class ThresholdDetector(shotDetector):
     """Detects fast cuts/slow fades in from and out to a given threshold level.

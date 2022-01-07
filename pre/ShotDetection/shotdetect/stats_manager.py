@@ -1,25 +1,27 @@
+# The codes below partially refer to the PySceneDetect. According
+# to its BSD 3-Clause License, we keep the following.
+#
+#          PySceneDetect: Python-Based Video Scene Detector
+#   ---------------------------------------------------------------
+#     [  Site: http://www.bcastell.com/projects/PySceneDetect/   ]
+#     [  Github: https://github.com/Breakthrough/PySceneDetect/  ]
+#     [  Documentation: http://pyscenedetect.readthedocs.org/    ]
+#
+# Copyright (C) 2014-2021 Brandon Castellano <http://www.bcastell.com>.
+
 from __future__ import print_function
+
 import logging
 
 from shotdetect.frame_timecode import MINIMUM_FRAMES_PER_SECOND_FLOAT
-from shotdetect.platform import get_csv_reader
-from shotdetect.platform import get_csv_writer
+from shotdetect.platform import get_csv_reader, get_csv_writer
 
 # pylint: disable=useless-super-delegation
-
-
-##
-## StatsManager CSV File Column Names (Header Row)
-##
 
 COLUMN_NAME_FPS = "Frame Rate:"
 COLUMN_NAME_FRAME_NUMBER = "Frame Number"
 COLUMN_NAME_TIMECODE = "Timecode"
 
-
-##
-## StatsManager Exceptions
-##
 
 class FrameMetricRegistered(Exception):
     """ Raised when attempting to register a frame metric key which has
@@ -128,7 +130,7 @@ class StatsManager(object):
         # type: (int, List[str]) -> List[Union[None, int, float, str]]
         """ Get Metrics: Returns the requested statistics/metrics for a given frame.
 
-        Arguments:
+        Args:
             frame_number (int): Frame number to retrieve metrics for.
             metric_keys (List[str]): A list of metric keys to look up.
 
@@ -144,7 +146,7 @@ class StatsManager(object):
         # type: (int, Dict[str, Union[None, int, float, str]]) -> None
         """ Set Metrics: Sets the provided statistics/metrics for a given frame.
 
-        Arguments:
+        Args:
             frame_number (int): Frame number to retrieve metrics for.
             metric_kv_dict (Dict[str, metric]): A dict mapping metric keys to the
                 respective integer/floating-point metric values to set.
@@ -178,7 +180,7 @@ class StatsManager(object):
         # type: (File [w], FrameTimecode, bool) -> None
         """ Save To CSV: Saves all frame metrics stored in the StatsManager to a CSV file.
 
-        Arguments:
+        Args:
             csv_file: A file handle opened in write mode (e.g. open('...', 'w')).
             base_timecode: The base_timecode obtained from the frame source VideoManager.
                 If using an OpenCV VideoCapture, create one using the video framerate by
@@ -221,7 +223,7 @@ class StatsManager(object):
         # type: (File [r], FrameTimecode, Optional[bool] -> int
         """ Load From CSV: Loads all metrics stored in a CSV file into the StatsManager instance.
 
-        Arguments:
+        Args:
             csv_file: A file handle opened in read mode (e.g. open('...', 'r')).
             base_timecode: The base_timecode obtained from the frame source VideoManager.
                 If using an OpenCV VideoCapture, create one using the video framerate by

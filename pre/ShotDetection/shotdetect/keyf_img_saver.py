@@ -1,23 +1,22 @@
 from __future__ import print_function
+
 import logging
-import os
-import time
 import math
-from string import Template
+import os
 import pdb
-from utilis import mkdir_ifmiss
+from string import Template
+
 import cv2
-from shotdetect.platform import tqdm
-from shotdetect.platform import get_cv2_imwrite_params
+
+from shotdetect.platform import get_cv2_imwrite_params, tqdm
 
 
 def get_output_file_path(file_path, output_dir=None):
-    # type: (str, Optional[str]) -> str
     """ Get Output File Path: Gets full path to output file passed as argument, in
     the specified global output directory (scenedetect -o/--output) if set, creating
     any required directories along the way.
 
-    Arguments:
+    Args:
         file_path (str): File name to get path for.  If file_path is an absolute
             path (e.g. starts at a drive/root), no modification of the path
             is performed, only ensuring that all output directories are created.
@@ -48,9 +47,18 @@ def get_output_file_path(file_path, output_dir=None):
 def generate_images(video_manager, shot_list, output_dir, num_images=3,
                     image_name_template='shot_${SHOT_NUMBER}_img_${IMAGE_NUMBER}',
                     ):
-    # type: (List[Tuple[FrameTimecode, FrameTimecode]) -> None
-    assert num_images >= 3
-    mkdir_ifmiss(output_dir)
+    '''
+        Args:
+            num_images: number of keyframes
+    '''
+    assert num_images >= 1
+    os.makedirs(output_dir, exist_ok=True)
+    if num_images == 1:
+        image_name_template = 'shot_${SHOT_NUMBER}'
+    else:
+        pass
+    filename_template = Template(image_name_template)
+
     quiet_mode = False
     imwrite_params = get_cv2_imwrite_params()
     image_param = None
@@ -76,7 +84,6 @@ def generate_images(video_manager, shot_list, output_dir, num_images=3,
         progress_bar = tqdm(
             total=len(shot_list) * num_images, unit='images', desc="Save Keyf")
 
-    filename_template = Template(image_name_template)
 
     shot_num_format = '%0'
     shot_num_format += str(max(4, math.floor(math.log(len(shot_list), 10)) + 1)) + 'd'
@@ -94,7 +101,7 @@ def generate_images(video_manager, shot_list, output_dir, num_images=3,
             timecode_list[i].append(start_time + int(duration.get_frames() / 2))
 
     else:
-        middle_images = num_images - 2  # minus the start and the end
+        middle_images = num_images - 2
         for i, (start_time, end_time) in enumerate(shot_list):
             timecode_list[i].append(start_time)
 
@@ -137,7 +144,7 @@ def generate_images_txt(shot_list, output_dir, num_images=5):
     timecode_list = dict()
     for i in range(len(shot_list)):
         timecode_list[i] = []
-    middle_images = num_images - 2  # minus the start and the end
+    middle_images = num_images - 2
     for i, (start_time, end_time) in enumerate(shot_list):
         timecode_list[i].append(start_time)
         if middle_images > 0:
@@ -156,7 +163,7 @@ def generate_images_txt(shot_list, output_dir, num_images=5):
         frame_list = []
         for j, image_timecode in enumerate(timecode_list[i]):
             frame_list.append(image_timecode.get_frames())
-        frames_item = "{} {} ".format(frame_list[0],frame_list[-1])
+        frames_item = "{} {} ".format(frame_list[0], frame_list[-1])
         for i in range(num_images-2):
             frames_item += "{} ".format(frame_list[i+1])
         frames_list.append(frames_item[:-1])

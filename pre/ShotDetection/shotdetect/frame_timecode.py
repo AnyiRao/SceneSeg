@@ -1,5 +1,14 @@
-""" ``shotdetect.frame_timecode`` Module
-
+# The codes below partially refer to the PySceneDetect. According
+# to its BSD 3-Clause License, we keep the following.
+#
+#          PySceneDetect: Python-Based Video Scene Detector
+#   ---------------------------------------------------------------
+#     [  Site: http://www.bcastell.com/projects/PySceneDetect/   ]
+#     [  Github: https://github.com/Breakthrough/PySceneDetect/  ]
+#     [  Documentation: http://pyscenedetect.readthedocs.org/    ]
+#
+# Copyright (C) 2014-2021 Brandon Castellano <http://www.bcastell.com>.
+"""
 This module contains the :py:class:`FrameTimecode` object, which is used as a way for
 ShotDetect to store frame-accurate timestamps of each cut. This is done by also
 specifying the video framerate with the timecode, allowing a frame number to be
@@ -12,8 +21,8 @@ Unit tests for the FrameTimecode object can be found in `tests/test_timecode.py`
 """
 
 import math
-from shotdetect.platform import STRING_TYPE
 
+from shotdetect.platform import STRING_TYPE
 
 MINIMUM_FRAMES_PER_SECOND_FLOAT = 1.0 / 1000.0
 MINIMUM_FRAMES_PER_SECOND_DELTA_FLOAT = 1.0 / 100000
@@ -36,7 +45,7 @@ class FrameTimecode(object):
         `int` in form `N`, or
         `str` in form 'N'
 
-    Arguments:
+    Args:
         timecode (str, float, int, or FrameTimecode):  A timecode or frame
             number, given in any of the above valid formats/types.  This
             argument is always required.
@@ -133,7 +142,7 @@ class FrameTimecode(object):
         """ Equal Framerate: Determines if the passed framerate is equal to that of the
         FrameTimecode object.
 
-        Arguments:
+        Args:
             fps:    Framerate (float) to compare against within the precision constant
                     MINIMUM_FRAMES_PER_SECOND_DELTA_FLOAT defined in this module.
 
@@ -442,4 +451,3 @@ class FrameTimecode(object):
 
     def __repr__(self):
         return 'FrameTimecode(frame=%d, fps=%f)' % (self.frame_num, self.framerate)
-

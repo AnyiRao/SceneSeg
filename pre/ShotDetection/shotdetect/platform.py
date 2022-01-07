@@ -1,5 +1,15 @@
-""" ShotDetect `scenedetect.platform` Module
+# The codes below partially refer to the PySceneDetect. According
+# to its BSD 3-Clause License, we keep the following.
+#
+#          PySceneDetect: Python-Based Video Scene Detector
+#   ---------------------------------------------------------------
+#     [  Site: http://www.bcastell.com/projects/PySceneDetect/   ]
+#     [  Github: https://github.com/Breakthrough/PySceneDetect/  ]
+#     [  Documentation: http://pyscenedetect.readthedocs.org/    ]
+#
+# Copyright (C) 2014-2021 Brandon Castellano <http://www.bcastell.com>.
 
+"""
 This file contains all platform/library/OS-specific compatibility fixes,
 intended to improve the systems that are able to run ShotDetect, and allow
 for maintaining backwards compatibility with existing libraries going forwards.
@@ -40,11 +50,6 @@ if sys.version_info[0] == 2:
 else:
     import queue
 
-
-##
-## tqdm Library (scenedetect.platform.tqdm will be tqdm object or None)
-##
-
 try:
     from tqdm import tqdm
 except ImportError:
@@ -52,11 +57,6 @@ except ImportError:
 
 
 # pylint: enable=unused-import
-
-
-##
-## click/Command-Line Interface String Type
-##
 
 # String type (used to allow FrameTimecode object to take both unicode and native
 # string objects when being constructed via scenedetect.platform.STRING_TYPE).
@@ -87,12 +87,7 @@ if cv2.__version__[0] == '2' or not (
 # pylint: enable=c-extension-no-member
 
 
-##
-## OpenCV DLL Check Function (Windows Only)
-##
-
 def check_opencv_ffmpeg_dll():
-    # type: () -> bool
     """ Check OpenCV FFmpeg DLL: Checks if OpenCV video I/O support is available,
     on Windows only, by checking for the appropriate opencv_ffmpeg*.dll file.
 
@@ -118,12 +113,7 @@ def check_opencv_ffmpeg_dll():
     return True
 
 
-##
-## OpenCV imwrite Supported Image Types & Quality/Compression Parameters
-##
-
 def _get_cv2_param(param_name):
-    # type: (str) -> Union[int, None]
     if param_name.startswith('CV_'):
         param_name = param_name[3:]
     try:
@@ -133,7 +123,6 @@ def _get_cv2_param(param_name):
 
 
 def get_cv2_imwrite_params():
-    # type: () -> Dict[str, Union[int, None]]
     """ Get OpenCV imwrite Params: Returns a dict of supported image formats and
     their associated quality/compression parameter.
 
@@ -150,10 +139,6 @@ def get_cv2_imwrite_params():
     }
 
 
-##
-## Python csv Module Wrapper (for StatsManager, and CliContext/list-scenes command)
-##
-
 def get_csv_reader(file_handle):
     # type: (File) -> csv.reader
     """ Returns a csv.reader object using the passed file handle. """
@@ -164,4 +149,3 @@ def get_csv_writer(file_handle):
     # type: (File) -> csv.writer
     """ Returns a csv.writer object using the passed file handle. """
     return csv.writer(file_handle, lineterminator='\n')
-

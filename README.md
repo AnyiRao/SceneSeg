@@ -12,7 +12,7 @@ Currently, it only supports image input.
 😬 The scene segmentation dataset is prompted to **[MovieNet](http://movienet.site)** project with 318 movies together with a easy-to-use toolkit. It is encouraged to use in the future. 
 
 ## Features
-- Basic video processing tools are provided including shot detection and its parallel version.
+- Basic video processing tools are provided including [shot detection](pre/ShotDetection) and its parallel version.
 - Holistic semantic video feature extractors including place, audio, human, action, speech are planned to be included if you wish and leave a looking forward message in the issue. Place and audio are supported now in the ``pre``. Full version is located at [movienet-tools](https://github.com/movienet/movienet-tools).
 - All-in-one scene segmentation tool with all multi-modal multi-semantic elements.
 

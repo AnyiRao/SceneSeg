@@ -1,3 +1,13 @@
+# The codes below partially refer to the PySceneDetect. According
+# to its BSD 3-Clause License, we keep the following.
+#
+#          PySceneDetect: Python-Based Video Scene Detector
+#   ---------------------------------------------------------------
+#     [  Site: http://www.bcastell.com/projects/PySceneDetect/   ]
+#     [  Github: https://github.com/Breakthrough/PySceneDetect/  ]
+#     [  Documentation: http://pyscenedetect.readthedocs.org/    ]
+#
+# Copyright (C) 2014-2021 Brandon Castellano <http://www.bcastell.com>.
 # pylint: disable=unused-argument, no-self-use
 
 
@@ -20,7 +30,6 @@ class shotDetector(object):
     """ Name of detector to use in command-line interface description. """
 
     def is_processing_required(self, frame_num):
-        # type: (int) -> bool
         """ Is Processing Required: Test if all calculations for a given frame are already done.
 
         Returns:
@@ -36,9 +45,7 @@ class shotDetector(object):
             self.stats_manager is not None and
             self.stats_manager.metrics_exist(frame_num, self._metric_keys))
 
-
     def get_metrics(self):
-        # type: () -> List[str]
         """ Get Metrics:  Get a list of all metric names/keys used by the detector.
 
         Returns:
@@ -47,9 +54,7 @@ class shotDetector(object):
         """
         return self._metric_keys
 
-
     def process_frame(self, frame_num, frame_img):
-        # type: (int, numpy.ndarray) -> Tuple[bool, Union[None, List[int]]
         """ Process Frame: Computes/stores metrics and detects any shot changes.
 
         Prototype method, no actual detection.
@@ -59,9 +64,7 @@ class shotDetector(object):
         """
         return []
 
-
     def post_process(self, frame_num):
-        # type: (int) -> List[int]
         """ Post Process: Performs any processing after the last frame has been read.
 
         Prototype method, no actual detection.

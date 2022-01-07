@@ -1,18 +1,25 @@
-# Standard Library Imports
+# The codes below partially refer to the PySceneDetect. According
+# to its BSD 3-Clause License, we keep the following.
+#
+#          PySceneDetect: Python-Based Video Scene Detector
+#   ---------------------------------------------------------------
+#     [  Site: http://www.bcastell.com/projects/PySceneDetect/   ]
+#     [  Github: https://github.com/Breakthrough/PySceneDetect/  ]
+#     [  Documentation: http://pyscenedetect.readthedocs.org/    ]
+#
+# Copyright (C) 2014-2021 Brandon Castellano <http://www.bcastell.com>.
+
 from __future__ import print_function
+
 import math
+import pdb
 
 import cv2
-from shotdetect.platform import tqdm
 
 from shotdetect.frame_timecode import FrameTimecode
-from shotdetect.platform import get_csv_writer
+from shotdetect.platform import get_csv_writer, tqdm
 from shotdetect.stats_manager import FrameMetricRegistered
 
-import pdb
-##
-## shotManager Helper Functions
-##
 
 def get_shots_from_cuts(cut_list, base_timecode, num_frames, start_frame=0):
     # type: List[FrameTimecode], FrameTimecode, Union[int, FrameTimecode],
@@ -25,7 +32,7 @@ def get_shots_from_cuts(cut_list, base_timecode, num_frames, start_frame=0):
     noting that each shot is contiguous, starting from the first to last frame of the input.
 
 
-    Arguments:
+    Args:
         cut_list (List[FrameTimecode]): List of FrameTimecode objects where shot cuts/breaks occur.
         base_timecode (FrameTimecode): The base_timecode of which all FrameTimecodes in the cut_list
             are based on.
@@ -58,7 +65,7 @@ def get_shots_from_cuts(cut_list, base_timecode, num_frames, start_frame=0):
 def write_shot_list(output_csv_file, shot_list, cut_list=None):
     """ Writes the given list of shots to an output file handle in CSV format.
 
-    Arguments:
+    Args:
         output_csv_file: Handle to open file in write mode.
         shot_list: List of pairs of FrameTimecodes denoting each shot's start/end FrameTimecode.
         cut_list: Optional list of FrameTimecode objects denoting the cut list (i.e. the frames
@@ -85,10 +92,6 @@ def write_shot_list(output_csv_file, shot_list, cut_list=None):
             '%d' % duration.get_frames(), duration.get_timecode(), '%.3f' % duration.get_seconds()])
 
 
-##
-## ShotManager Class Implementation
-##
-
 class ShotManager(object):
     """ The shotManager facilitates detection of shots via the :py:meth:`detect_shots` method,
     given a video source (:py:class:`VideoManager <shotdetect.video_manager.VideoManager>`
@@ -108,14 +111,13 @@ class ShotManager(object):
         self._num_frames = 0
         self._start_frame = 0
 
-
     def add_detector(self, detector):
         # type: (shotDetector) -> None
         """ Adds/registers a shotDetector (e.g. ContentDetector, ThresholdDetector) to
         run when detect_shots is called. The shotManager owns the detector object,
         so a temporary may be passed.
 
-        Arguments:
+        Args:
             detector (shotDetector): shot detector to add to the shotManager.
         """
         detector.stats_manager = self._stats_manager
@@ -134,7 +136,6 @@ class ShotManager(object):
         """ Gets number of registered shot detectors added via add_detector. """
         return len(self._detector_list)
 
-
     def clear(self):
         # type: () -> None
         """ Clears all cuts/shots and resets the shotManager's position.
@@ -150,12 +151,10 @@ class ShotManager(object):
         self._num_frames = 0
         self._start_frame = 0
 
-
     def clear_detectors(self):
         # type: () -> None
         """ Removes all shot detectors added to the shotManager via add_detector(). """
         self._detector_list.clear()
-
 
     def get_shot_list(self, base_timecode):
         # type: (FrameTimecode) -> List[Tuple[FrameTimecode, FrameTimecode]]
@@ -173,7 +172,6 @@ class ShotManager(object):
         return get_shots_from_cuts(
             self.get_cut_list(base_timecode), base_timecode,
             self._num_frames, self._start_frame)
-
 
     def get_cut_list(self, base_timecode):
         # type: (FrameTimecode) -> List[FrameTimecode]
@@ -194,25 +192,21 @@ class ShotManager(object):
         return [FrameTimecode(cut, base_timecode)
                 for cut in self._get_cutting_list()]
 
-
     def _get_cutting_list(self):
         # type: () -> list
         """ Returns a sorted list of unique frame numbers of any detected shot cuts. """
         # We remove duplicates here by creating a set then back to a list and sort it.
         return sorted(list(set(self._cutting_list)))
 
-
     def _add_cut(self, frame_num):
         # type: (int) -> None
         # Adds a cut to the cutting list.
         self._cutting_list.append(frame_num)
 
-
     def _add_cuts(self, cut_list):
         # type: (List[int]) -> None
         # Adds a list of cuts to the cutting list.
         self._cutting_list += cut_list
-
 
     def _process_frame(self, frame_num, frame_im):
         # type(int, numpy.ndarray) -> None
@@ -227,13 +221,11 @@ class ShotManager(object):
         """
         return all([detector.is_processing_required(frame_num) for detector in self._detector_list])
 
-
     def _post_process(self, frame_num):
         # type(int, numpy.ndarray) -> None
         """ Adds any remaining cuts to the cutting list after processing the last frame. """
         for detector in self._detector_list:
             self._add_cuts(detector.post_process(frame_num))
-
 
     def detect_shots(self, frame_source, end_time=None, frame_skip=0,
                       show_progress=True):
@@ -244,7 +236,7 @@ class ShotManager(object):
         Blocks until all frames in the frame_source have been processed. Results can
         be obtained by calling either the get_shot_list() or get_cut_list() methods.
 
-        Arguments:
+        Args:
             frame_source (shotdetect.video_manager.VideoManager or cv2.VideoCapture):
                 A source of frames to process (using frame_source.read() as in VideoCapture).
                 VideoManager is preferred as it allows concatenation of multiple videos

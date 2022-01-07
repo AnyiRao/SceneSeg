@@ -1,6 +1,8 @@
-import numpy as np
-import cv2
 import pdb
+
+import cv2
+import numpy as np
+
 from shotdetect.shot_detector import shotDetector
 
 
@@ -16,7 +18,7 @@ class ContentDetectorHSVLUV(shotDetector):
         super(ContentDetectorHSVLUV, self).__init__()
         self.hsv_threshold = threshold
         self.delta_hsv_gap_threshold = 10
-        self.luv_threshold = 40
+        self.luv_threshold = 20
         self.hsv_weight = 5
         self.min_shot_len = min_shot_len  # minimum length of any given shot, in frames
         self.last_frame = None
@@ -31,7 +33,7 @@ class ContentDetectorHSVLUV(shotDetector):
         """ Similar to ThresholdDetector, but using the HSV colour space DIFFERENCE instead
         of single-frame RGB/grayscale intensity (thus cannot detect slow fades with this method).
 
-        Arguments:
+        Args:
             frame_num (int): Frame number of frame that is being passed.
 
             frame_img (Optional[int]): Decoded frame image (np.ndarray) to perform shot
@@ -50,7 +52,7 @@ class ContentDetectorHSVLUV(shotDetector):
             # Change in average of HSV (hsv), (h)ue only, (s)aturation only, (l)uminance only.
             delta_hsv_avg, delta_hsv_h, delta_hsv_s, delta_hsv_v = 0.0, 0.0, 0.0, 0.0
             delta_luv_avg, delta_luv_h, delta_luv_s, delta_luv_v = 0.0, 0.0, 0.0, 0.0
-            
+
             if (self.stats_manager is not None and
                     self.stats_manager.metrics_exist(frame_num, metric_keys)):
                 delta_hsv_avg, delta_hsv_h, delta_hsv_s, delta_hsv_v, delta_luv_avg, delta_luv_h, delta_luv_s, delta_luv_v = self.stats_manager.get_metrics(
@@ -60,6 +62,8 @@ class ContentDetectorHSVLUV(shotDetector):
                 num_pixels = frame_img.shape[0] * frame_img.shape[1]
                 curr_luv = cv2.split(cv2.cvtColor(frame_img, cv2.COLOR_BGR2Luv))
                 curr_hsv = cv2.split(cv2.cvtColor(frame_img, cv2.COLOR_BGR2HSV))
+                curr_luv = [x.astype(np.int32) for x in curr_luv]
+                curr_hsv = [x.astype(np.int32) for x in curr_hsv]
                 last_hsv = self.last_hsv
                 last_luv = self.last_luv
                 if not last_hsv:
@@ -69,18 +73,14 @@ class ContentDetectorHSVLUV(shotDetector):
                 delta_hsv = [0, 0, 0, 0]
                 for i in range(3):
                     num_pixels = curr_hsv[i].shape[0] * curr_hsv[i].shape[1]
-                    curr_hsv[i] = curr_hsv[i].astype(np.int32)
-                    last_hsv[i] = last_hsv[i].astype(np.int32)
                     delta_hsv[i] = np.sum(
                         np.abs(curr_hsv[i] - last_hsv[i])) / float(num_pixels)
                 delta_hsv[3] = sum(delta_hsv[0:3]) / 3.0
                 delta_hsv_h, delta_hsv_s, delta_hsv_v, delta_hsv_avg = delta_hsv
 
-                delta_luv =  [0, 0, 0, 0]
+                delta_luv = [0, 0, 0, 0]
                 for i in range(3):
                     num_pixels = curr_luv[i].shape[0] * curr_luv[i].shape[1]
-                    curr_luv[i] = curr_luv[i].astype(np.int32)
-                    last_luv[i] = last_luv[i].astype(np.int32)
                     delta_luv[i] = np.sum(
                         np.abs(curr_luv[i] - last_luv[i])) / float(num_pixels)
                 delta_luv[3] = sum(delta_luv[0:3]) / 3.0
@@ -128,11 +128,3 @@ class ContentDetectorHSVLUV(shotDetector):
         # if len(cut_list) > 0:
         #     print(frame_num,cut_list)
         return cut_list
-
-
-    #def post_process(self, frame_num):
-    #    """ Not used for ContentDetector, as unlike ThresholdDetector, cuts
-    #    are always written as they are found.
-    #    """
-    #    return []
-
