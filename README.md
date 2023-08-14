@@ -4,12 +4,12 @@
 ![demo image](images/pipeline.png)
 
 ## Introduction
-From a video to segemented scenes. Basically, two steps are needed including holistic features extraction and temporal scene segmentation.
+From a video to segmented scenes. Basically, two steps are needed, including holistic features extraction and temporal scene segmentation.
 
-A single stage temporal scene segmentation is also provided in the [demo](docs/GETTING_STARTED.md#demo). This is going to be a easy-to-use tool for plot/story unstanding with scene as a semantic unit.
+A single-stage temporal scene segmentation is also provided in the [demo](docs/GETTING_STARTED.md#demo). This is going to be an easy-to-use tool for plot/story understanding with scene as a semantic unit.
 Currently, it only supports image input.
 
-😬 The scene segmentation dataset is prompted to **[MovieNet](http://movienet.site)** project with 318 movies together with a easy-to-use toolkit. It is encouraged to use in the future. 
+😬 The scene segmentation dataset is prompted to **[MovieNet](https://movienet.github.io/)** project with 318 movies together with a easy-to-use toolkit. It is encouraged to use in the future. 
 
 ## Features
 - Basic video processing tools are provided including [shot detection](pre/ShotDetection) and its parallel version.
